@@ -37,6 +37,11 @@ function CreateAccount() {
       setTimeout(() => setStatus(""), 3000);
       return false;
     }
+    if (label === "password" && field.length < 8) {
+      setStatus(`Password has to be at least 8 characters long`);
+      setTimeout(() => setStatus(""), 3000);
+      return false;
+    }
     if (label === "email" && Object.hasOwn(ctx.users, email)) {
       setStatus(`Duplicate mail already exists`);
       setTimeout(() => setStatus(""), 3000);
