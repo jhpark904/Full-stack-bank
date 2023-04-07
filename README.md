@@ -38,4 +38,4 @@ The application supports:
 
 ## License
 
-[MIT License](License)
+[MIT License](LICENSE)
