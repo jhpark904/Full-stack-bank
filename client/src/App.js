@@ -1,7 +1,6 @@
 import "./App.css";
-import { HashRouter } from "./components/context";
 import NavBar from "./components/navbar";
-import { UserContext } from "./components/context";
+import { UserContext, HashRouter } from "./components/context";
 import { Route, Routes } from "./components/context";
 import Home from "./components/home";
 import CreateAccount from "./components/createaccount";
