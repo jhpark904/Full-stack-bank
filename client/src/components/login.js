@@ -1,13 +1,13 @@
 import { BankForm } from "./context";
 import React from "react";
-import { UserContext } from "./context";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { auth } from "../auth/firebase";
 
 const Login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [status, setStatus] = React.useState("");
-  const ctx = React.useContext(UserContext);
-  const [show, setShow] = React.useState(ctx.currentUser === null);
+  const [show, setShow] = React.useState(!auth.currentUser);
 
   const fields = [
     {
@@ -33,11 +33,17 @@ const Login = () => {
     return true;
   };
 
-  const signOut = () => {
-    setEmail("");
-    setPassword("");
-    setShow(true);
-    ctx.currentUser = null;
+  const logOut = () => {
+    signOut(auth)
+      .then(() => {
+        // Sign-out successfuly
+        setEmail("");
+        setPassword("");
+        setShow(true);
+      })
+      .catch((error) => {
+        console.log(`${error.message}`);
+      });
   };
 
   const signIn = () => {
@@ -49,14 +55,15 @@ const Login = () => {
       return;
     }
 
-    const users = ctx.users;
-    if (
-      Object.hasOwn(users, email) &&
-      users[`${email}`].password === password
-    ) {
-      ctx.currentUser = users[`${email}`];
-      setShow(false);
-    }
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        // Signed in
+        setShow(false);
+      })
+      .catch((error) => {
+        setStatus(error.message);
+        setTimeout(() => setStatus(""), 3000);
+      });
   };
 
   return (
@@ -68,9 +75,9 @@ const Login = () => {
       handleSubmit={signIn}
       submitButtonText={"Log in"}
       status={status}
-      successString={ctx.currentUser && `Welcome ${ctx.currentUser.name}!`}
+      successString={!show && `Welcome to the Bank!`}
       refreshActionString="Sign out"
-      handleRefreshAction={signOut}
+      handleRefreshAction={logOut}
     />
   );
 };

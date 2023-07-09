@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route, Link, HashRouter } from "react-router-dom";
 
 const UserContext = React.createContext(null);
+const apiUrl = `http://localhost:8080`;
 
 const classes = (bgcolor, txtcolor) => {
   const bg = bgcolor ? " bg-" + bgcolor : " ";
@@ -137,4 +138,13 @@ const BankCard = ({
   );
 };
 
-export { Routes, BankCard, BankForm, Route, Link, HashRouter, UserContext };
+export {
+  Routes,
+  BankCard,
+  BankForm,
+  Route,
+  Link,
+  HashRouter,
+  UserContext,
+  apiUrl,
+};

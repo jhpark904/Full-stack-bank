@@ -1,6 +1,8 @@
 import React from "react";
-import { UserContext } from "./context";
+import { apiUrl } from "./context";
 import { BankForm } from "./context";
+import { auth } from "../auth/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 function CreateAccount() {
   const [show, setShow] = React.useState(true);
@@ -8,7 +10,6 @@ function CreateAccount() {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const ctx = React.useContext(UserContext);
 
   const fields = [
     {
@@ -42,11 +43,6 @@ function CreateAccount() {
       setTimeout(() => setStatus(""), 3000);
       return false;
     }
-    if (label === "email" && Object.hasOwn(ctx.users, email)) {
-      setStatus(`Duplicate mail already exists`);
-      setTimeout(() => setStatus(""), 3000);
-      return false;
-    }
     return true;
   }
 
@@ -55,8 +51,25 @@ function CreateAccount() {
     if (!validate(email, "email")) return;
     if (!validate(password, "password")) return;
 
-    ctx.users[email] = { name, email, password, balance: 0 };
-    setShow(false);
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in successfully
+        const user = userCredential.user;
+
+        // const url = `${apiUrl}/account/create/${user.uid}`;
+        // (async () => {
+        //   const res = await fetch(url);
+        //   const data = await res.json();
+        //   console.log(data);
+        // })();
+
+        setShow(false);
+      })
+      .catch((error) => {
+        setStatus(error.message);
+        setTimeout(() => setStatus(""), 3000);
+        return;
+      });
   }
 
   function clearForm() {

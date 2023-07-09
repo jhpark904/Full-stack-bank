@@ -3,6 +3,8 @@
 # dependencies
 /client/node_modules
 /client/.pnp
+/server/node_modules
+/server/.pnp
 .pnp.js
 
 # testing
@@ -10,6 +12,9 @@
 
 # production
 /client/build
+
+# security
+/server/auth/auth-routes.json
 
 # misc
 .DS_Store

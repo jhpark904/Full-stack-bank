@@ -6,13 +6,13 @@ let db = null;
 MongoClient.connect(url, { useUnifiedTopology: true }, function (err, client) {
   console.log("Connected to db server!");
   const dbName = "bankdb";
-  db = client.db(collectionName);
+  db = client.db(dbName);
 });
 
-function create(name, email, password) {
+function create(uid) {
   return new Promise((resolve, reject) => {
     const collection = db.collection(collectionName);
-    const doc = { name, email, password, balance: 0 };
+    const doc = { uid, balance: 0 };
     collection.insertOne(doc, { w: 1 }, function (err, res) {
       err ? reject(err) : resolve(doc);
     });
@@ -29,4 +29,4 @@ function all() {
   });
 }
 
-module.exports = { create, all };
+module.exports = { create, all, db };
