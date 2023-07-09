@@ -1,9 +1,8 @@
 const admin = require("firebase-admin");
-
-const serviceAccount = require("./auth-routes.json");
+require("dotenv").config();
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(JSON.parse(process.env.AUTH_ROUTES)),
 });
 
 module.exports = admin;
