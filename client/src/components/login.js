@@ -1,4 +1,4 @@
-import { BankForm } from "./context";
+import { BankForm, apiUrl } from "./context";
 import React from "react";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "../auth/firebase";
@@ -56,8 +56,17 @@ const Login = () => {
     }
 
     signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
+      .then((userCredential) => {
         // Signed in
+
+        const url = `${apiUrl}/account/get/sample`;
+        console.log(url);
+        (async () => {
+          const res = await fetch(url);
+          const data = await res.json();
+          console.log(data);
+        })();
+
         setShow(false);
       })
       .catch((error) => {

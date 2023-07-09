@@ -56,12 +56,12 @@ function CreateAccount() {
         // Signed in successfully
         const user = userCredential.user;
 
-        // const url = `${apiUrl}/account/create/${user.uid}`;
-        // (async () => {
-        //   const res = await fetch(url);
-        //   const data = await res.json();
-        //   console.log(data);
-        // })();
+        const url = `${apiUrl}/account/create/${user.name}/${user.uid}`;
+        (async () => {
+          const res = await fetch(url);
+          const data = await res.json();
+          console.log(data);
+        })();
 
         setShow(false);
       })

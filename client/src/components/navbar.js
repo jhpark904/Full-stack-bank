@@ -1,24 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { Tooltip } from "react-bootstrap";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../auth/firebase";
 
 const tooltip = (displayInfo) => {
   return <Tooltip>{displayInfo}</Tooltip>;
 };
 
-const NavBar = () => {
-  const [signedIn, setSignedIn] = useState(auth.currentUser != null);
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setSignedIn(true);
-    } else {
-      setSignedIn(false);
-    }
-  });
-
+const NavBar = ({ currentUser }) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <a className="navbar-brand" href="#/">
@@ -59,7 +47,7 @@ const NavBar = () => {
               </a>
             </li>
           </OverlayTrigger>
-          {signedIn && (
+          {currentUser && (
             <>
               <OverlayTrigger
                 placement="bottom"
