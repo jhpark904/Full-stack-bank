@@ -40,8 +40,15 @@ app.use(cors());
 // });
 
 // create account route
-app.get("/account/create/:uid", function (req, res) {
-  dal.create(req.uid).then((user) => {
+app.get("/account/create/:name/:uid", function (req, res) {
+  dal.create(req.params.name, req.params.uid).then((user) => {
+    res.send(user);
+  });
+});
+
+// get user route
+app.get("/account/get/:uid", function (req, res) {
+  dal.getUser(req.params.uid).then((user) => {
     res.send(user);
   });
 });
@@ -51,6 +58,13 @@ app.get("/account/login/:email/:password", function (req, res) {
   res.send({
     email: req.params.email,
     password: req.params.password,
+  });
+});
+
+// update balance route
+app.get("/balance/:uid/:amount", function (req, res) {
+  dal.updateBalance(req.params.uid, req.params.amount).then((user) => {
+    res.send(user);
   });
 });
 

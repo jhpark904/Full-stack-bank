@@ -1,15 +1,23 @@
-import React from "react";
-import { UserContext } from "./context";
+import React, { useEffect } from "react";
 import { BankForm } from "./context";
+import { useNavigate } from "react-router-dom";
+import { apiUrl } from "./context";
 
-const Deposit = () => {
+const Deposit = ({ currentUser, refreshCurrentUser }) => {
+  console.log(currentUser);
   const [amount, setAmount] = React.useState(0);
   const [status, setStatus] = React.useState("");
-  const ctx = React.useContext(UserContext);
-  const show = ctx.currentUser !== null;
+  const show = currentUser !== null;
   const [balance, setBalance] = React.useState(
-    ctx.currentUser ? ctx.currentUser.balance : 0
+    currentUser ? currentUser.balance : 0
   );
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (currentUser == null) {
+      navigate("/login/");
+    }
+  }, []);
 
   const fields = [
     {
@@ -29,14 +37,14 @@ const Deposit = () => {
     return true;
   };
 
-  const deposit = () => {
+  const handleDeposit = () => {
     if (!validate(amount)) {
       return;
     }
 
     const numberAmount = Number(amount);
     const newBalance = balance + numberAmount;
-    ctx.currentUser.balance = newBalance;
+    currentUser.balance = newBalance;
 
     setBalance(newBalance);
     setStatus("Deposit success!");
@@ -47,10 +55,10 @@ const Deposit = () => {
     <BankForm
       bgcolor="primary"
       header="Deposit"
-      title={ctx.currentUser && `Balance: $${balance}`}
+      title={currentUser && `Balance: $${balance}`}
       displayForm={show}
       inputFields={fields}
-      handleSubmit={deposit}
+      handleSubmit={handleDeposit}
       submitButtonText={"Deposit"}
       status={status}
       successString="Please sign in to deposit"

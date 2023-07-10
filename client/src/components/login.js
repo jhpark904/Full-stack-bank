@@ -3,7 +3,7 @@ import React from "react";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "../auth/firebase";
 
-const Login = () => {
+const Login = ({ currentUser }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [status, setStatus] = React.useState("");
