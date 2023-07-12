@@ -108,7 +108,13 @@ const BankCard = ({
         {Object.entries(data).map(([key, value]) => {
           return (
             <li key={key} className="list-group-item">
-              {JSON.stringify(value)}
+              {Object.entries(value).map(([innerKey, innerValue]) => {
+                return (
+                  <p>
+                    <b>{innerKey}</b>: {innerValue || "N/A"}
+                  </p>
+                );
+              })}
             </li>
           );
         })}

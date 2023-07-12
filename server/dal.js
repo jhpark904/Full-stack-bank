@@ -4,6 +4,8 @@ const collectionName = "Users";
 let db = null;
 
 MongoClient.connect(url, { useUnifiedTopology: true }, function (err, client) {
+  if (err) throw err;
+
   console.log("Connected to db server!");
   const dbName = "bankdb";
   db = client.db(dbName);
@@ -14,7 +16,7 @@ function create(name, uid) {
     const collection = db.collection(collectionName);
     const doc = { name, uid, balance: 0 };
     collection.insertOne(doc, { w: 1 }, function (err, res) {
-      err ? reject(err) : resolve(doc);
+      err ? reject(err) : resolve(res);
     });
   });
 }
@@ -32,15 +34,20 @@ function getUser(user) {
 function updateBalance(user, amount) {
   const numberAmount = Number(amount);
 
-  return db.collection(collectionName).findOneAndUpdate(
-    { uid: user },
-    {
-      $inc: {
-        balance: numberAmount,
+  return new Promise((resolve, reject) => {
+    db.collection(collectionName).findOneAndUpdate(
+      { uid: user },
+      {
+        $inc: {
+          balance: numberAmount,
+        },
       },
-    },
-    { returnDocument: "after" }
-  );
+      { returnDocument: "after" },
+      (err, doc) => {
+        err ? reject(err) : resolve(doc);
+      }
+    );
+  });
 }
 
 function all() {
