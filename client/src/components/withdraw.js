@@ -1,15 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BankForm } from "./context";
-import { UserContext } from "./context";
+import { useNavigate } from "react-router-dom";
+import { apiUrl } from "./context";
 
-const Withdraw = () => {
+const Withdraw = ({ currentUser, refreshCurrentUser }) => {
   const [amount, setAmount] = React.useState(0);
   const [status, setStatus] = React.useState("");
-  const ctx = React.useContext(UserContext);
-  const show = ctx.currentUser !== null;
-  const [balance, setBalance] = React.useState(
-    ctx.currentUser ? ctx.currentUser.balance : 0
-  );
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (currentUser == null) {
+      navigate("/login/");
+    }
+  }, []);
 
   const fields = [
     {
@@ -25,7 +28,7 @@ const Withdraw = () => {
       !amountInput ||
       isNaN(amountInput) ||
       amountInput < 0 ||
-      amountInput > balance
+      amountInput > currentUser.balance
     ) {
       setStatus("Invalid withdrawal amount");
       setTimeout(() => setStatus(""), 3000);
@@ -39,21 +42,24 @@ const Withdraw = () => {
       return;
     }
 
-    const numberAmount = Number(amount);
-    const newBalance = balance - numberAmount;
-    ctx.currentUser.balance = newBalance;
-
-    setBalance(newBalance);
-    setStatus("Withdrawal success!");
-    setTimeout(() => setStatus(""), 3000);
+    fetch(`${apiUrl}/balance/${currentUser.uid}/${-amount}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((user) => {
+        refreshCurrentUser(user.value, () => {
+          setStatus("Withdrawal success!");
+          setTimeout(() => setStatus(""), 3000);
+        });
+      });
   };
 
   return (
     <BankForm
       bgcolor="primary"
       header="Withdraw"
-      title={ctx.currentUser && `Balance: $${balance}`}
-      displayForm={show}
+      title={currentUser && `Balance: $${currentUser.balance}`}
+      displayForm={currentUser !== null}
       inputFields={fields}
       handleSubmit={withdraw}
       submitButtonText={"Withdraw"}

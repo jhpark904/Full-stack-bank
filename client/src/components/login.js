@@ -1,4 +1,4 @@
-import { BankForm, apiUrl } from "./context";
+import { BankForm } from "./context";
 import React from "react";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "../auth/firebase";
@@ -7,7 +7,8 @@ const Login = ({ currentUser }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [status, setStatus] = React.useState("");
-  const [show, setShow] = React.useState(!auth.currentUser);
+
+  const show = currentUser == null;
 
   const fields = [
     {
@@ -39,7 +40,6 @@ const Login = ({ currentUser }) => {
         // Sign-out successfuly
         setEmail("");
         setPassword("");
-        setShow(true);
       })
       .catch((error) => {
         console.log(`${error.message}`);
@@ -56,18 +56,8 @@ const Login = ({ currentUser }) => {
     }
 
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(() => {
         // Signed in
-
-        const url = `${apiUrl}/account/get/sample`;
-        console.log(url);
-        (async () => {
-          const res = await fetch(url);
-          const data = await res.json();
-          console.log(data);
-        })();
-
-        setShow(false);
       })
       .catch((error) => {
         setStatus(error.message);
@@ -84,7 +74,7 @@ const Login = ({ currentUser }) => {
       handleSubmit={signIn}
       submitButtonText={"Log in"}
       status={status}
-      successString={!show && `Welcome to the Bank!`}
+      successString={currentUser && `Welcome ${currentUser.name}!`}
       refreshActionString="Sign out"
       handleRefreshAction={logOut}
     />

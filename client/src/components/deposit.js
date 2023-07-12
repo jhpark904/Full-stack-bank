@@ -4,13 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { apiUrl } from "./context";
 
 const Deposit = ({ currentUser, refreshCurrentUser }) => {
-  console.log(currentUser);
   const [amount, setAmount] = React.useState(0);
   const [status, setStatus] = React.useState("");
-  const show = currentUser !== null;
-  const [balance, setBalance] = React.useState(
-    currentUser ? currentUser.balance : 0
-  );
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -42,21 +37,24 @@ const Deposit = ({ currentUser, refreshCurrentUser }) => {
       return;
     }
 
-    const numberAmount = Number(amount);
-    const newBalance = balance + numberAmount;
-    currentUser.balance = newBalance;
-
-    setBalance(newBalance);
-    setStatus("Deposit success!");
-    setTimeout(() => setStatus(""), 3000);
+    fetch(`${apiUrl}/balance/${currentUser.uid}/${amount}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((user) => {
+        refreshCurrentUser(user.value, () => {
+          setStatus("Deposit success!");
+          setTimeout(() => setStatus(""), 3000);
+        });
+      });
   };
 
   return (
     <BankForm
       bgcolor="primary"
       header="Deposit"
-      title={currentUser && `Balance: $${balance}`}
-      displayForm={show}
+      title={currentUser && `Balance: $${currentUser.balance}`}
+      displayForm={currentUser !== null}
       inputFields={fields}
       handleSubmit={handleDeposit}
       submitButtonText={"Deposit"}

@@ -16,27 +16,25 @@ import { apiUrl } from "./components/context";
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
 
-  const fetchCurrentUser = (user) => {
+  const fetchCurrentUser = (user, callback) => {
     fetch(`${apiUrl}/account/get/${user.uid}`)
       .then((res) => {
         return res.json();
       })
       .then((userArray) => {
-        console.log(userArray);
         if (userArray != null) {
           setCurrentUser(userArray[0]);
+
+          if (callback) {
+            callback();
+          }
         }
       });
-  };
-
-  const refreshCurrentUser = (user) => {
-    setCurrentUser(user);
   };
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log("user signed in");
         fetchCurrentUser(user);
       } else {
         setCurrentUser(null);
@@ -66,12 +64,22 @@ function App() {
               element={
                 <Deposit
                   currentUser={currentUser}
-                  refreshCurrentUser={refreshCurrentUser}
+                  refreshCurrentUser={fetchCurrentUser}
                 />
               }
             />
 
-            {currentUser && <Route path="/withdraw/" element={<Withdraw />} />}
+            {currentUser && (
+              <Route
+                path="/withdraw/"
+                element={
+                  <Withdraw
+                    currentUser={currentUser}
+                    refreshCurrentUser={fetchCurrentUser}
+                  />
+                }
+              />
+            )}
             {currentUser && <Route path="/alldata/" element={<AllData />} />}
           </Routes>
         </div>
