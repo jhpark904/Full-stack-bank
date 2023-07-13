@@ -56,9 +56,20 @@ function CreateAccount() {
         // Signed in successfully
         const user = userCredential.user;
 
-        const url = `${apiUrl}/account/create/${user.name}/${user.uid}`;
+        const url = `${apiUrl}/account/create`;
         (async () => {
-          const res = await fetch(url);
+          const res = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: name,
+              email: email,
+              password: password,
+              uid: user.uid,
+            }),
+          });
           const data = await res.json();
           console.log(data);
         })();

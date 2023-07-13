@@ -3,8 +3,10 @@ const app = express();
 const cors = require("cors");
 const dal = require("./dal");
 const admin = require("./auth/admin");
+const bodyParser = require("body-parser");
 
 app.use(cors());
+app.use(bodyParser.json());
 
 // app.get("/", (req, res) => res.send("navigate to localhost:3000/login.html!"));
 
@@ -40,8 +42,8 @@ app.use(cors());
 // });
 
 // create account route
-app.get("/account/create/:name/:uid", function (req, res) {
-  dal.create(req.params.name, req.params.uid).then((user) => {
+app.post("/account/create", function (req, res) {
+  dal.create(req.body).then((user) => {
     res.send(user);
   });
 });
@@ -62,7 +64,7 @@ app.get("/account/login/:email/:password", function (req, res) {
 });
 
 // update balance route
-app.get("/balance/:uid/:amount", function (req, res) {
+app.put("/balance/:uid/:amount", function (req, res) {
   dal.updateBalance(req.params.uid, req.params.amount).then((user) => {
     res.send(user);
   });
