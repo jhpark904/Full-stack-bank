@@ -42,8 +42,12 @@ const Withdraw = ({ currentUser, refreshCurrentUser }) => {
       return;
     }
 
-    fetch(`${apiUrl}/balance/${currentUser.uid}/${-amount}`, {
+    fetch(`${apiUrl}/balance/${currentUser.uid}`, {
       method: "Put",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ amount: -amount }),
     })
       .then((res) => {
         return res.json();

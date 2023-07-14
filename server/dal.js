@@ -19,7 +19,7 @@ function create(user) {
       balance: 0,
     };
     collection.insertOne(doc, { w: 1 }, function (err, res) {
-      err ? reject(err) : resolve(res);
+      err ? reject(err) : resolve(doc);
     });
   });
 }

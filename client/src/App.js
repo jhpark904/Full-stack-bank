@@ -22,7 +22,7 @@ function App() {
         return res.json();
       })
       .then((userArray) => {
-        if (userArray != null) {
+        if (userArray != null && userArray.length !== 0) {
           setCurrentUser(userArray[0]);
 
           if (callback) {
@@ -52,7 +52,7 @@ function App() {
 
             <Route
               path="/CreateAccount/"
-              element={<CreateAccount currentUser={currentUser} />}
+              element={<CreateAccount refreshCurrentUser={fetchCurrentUser} />}
             />
             <Route
               path="/login/"

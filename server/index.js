@@ -64,8 +64,8 @@ app.get("/account/login/:email/:password", function (req, res) {
 });
 
 // update balance route
-app.put("/balance/:uid/:amount", function (req, res) {
-  dal.updateBalance(req.params.uid, req.params.amount).then((user) => {
+app.put("/balance/:uid", function (req, res) {
+  dal.updateBalance(req.params.uid, req.body.amount).then((user) => {
     res.send(user);
   });
 });

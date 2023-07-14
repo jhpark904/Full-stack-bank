@@ -4,7 +4,7 @@ import { BankForm } from "./context";
 import { auth } from "../auth/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
-function CreateAccount() {
+function CreateAccount({ refreshCurrentUser }) {
   const [show, setShow] = React.useState(true);
   const [status, setStatus] = React.useState("");
   const [name, setName] = React.useState("");
@@ -57,24 +57,25 @@ function CreateAccount() {
         const user = userCredential.user;
 
         const url = `${apiUrl}/account/create`;
-        (async () => {
-          const res = await fetch(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: name,
-              email: email,
-              password: password,
-              uid: user.uid,
-            }),
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            password: password,
+            uid: user.uid,
+          }),
+        })
+          .then((res) => {
+            return res.json();
+          })
+          .then((user) => {
+            refreshCurrentUser(user);
+            setShow(false);
           });
-          const data = await res.json();
-          console.log(data);
-        })();
-
-        setShow(false);
       })
       .catch((error) => {
         setStatus(error.message);
