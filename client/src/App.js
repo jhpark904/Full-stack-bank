@@ -16,15 +16,14 @@ import { apiUrl } from "./components/context";
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
 
-  const fetchCurrentUser = (user, callback) => {
-    fetch(`${apiUrl}/account/get/${user.uid}`)
+  const fetchCurrentUser = (id, callback) => {
+    fetch(`${apiUrl}/account/get/${id}`)
       .then((res) => {
         return res.json();
       })
-      .then((userArray) => {
-        if (userArray != null && userArray.length !== 0) {
-          setCurrentUser(userArray[0]);
-
+      .then((user) => {
+        if (user) {
+          setCurrentUser(user);
           if (callback) {
             callback();
           }
@@ -35,7 +34,7 @@ function App() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        fetchCurrentUser(user);
+        fetchCurrentUser(user.uid);
       } else {
         setCurrentUser(null);
       }

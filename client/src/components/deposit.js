@@ -37,7 +37,7 @@ const Deposit = ({ currentUser, refreshCurrentUser }) => {
       return;
     }
 
-    fetch(`${apiUrl}/balance/${currentUser.uid}`, {
+    fetch(`${apiUrl}/balance/${currentUser._id}`, {
       method: "Put",
       headers: {
         "Content-Type": "application/json",
@@ -48,7 +48,7 @@ const Deposit = ({ currentUser, refreshCurrentUser }) => {
         return res.json();
       })
       .then((user) => {
-        refreshCurrentUser(user.value, () => {
+        refreshCurrentUser(user._id, () => {
           setStatus("Deposit success!");
           setTimeout(() => setStatus(""), 3000);
         });

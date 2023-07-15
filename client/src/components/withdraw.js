@@ -42,7 +42,7 @@ const Withdraw = ({ currentUser, refreshCurrentUser }) => {
       return;
     }
 
-    fetch(`${apiUrl}/balance/${currentUser.uid}`, {
+    fetch(`${apiUrl}/balance/${currentUser._id}`, {
       method: "Put",
       headers: {
         "Content-Type": "application/json",
@@ -53,7 +53,7 @@ const Withdraw = ({ currentUser, refreshCurrentUser }) => {
         return res.json();
       })
       .then((user) => {
-        refreshCurrentUser(user.value, () => {
+        refreshCurrentUser(user._id, () => {
           setStatus("Withdrawal success!");
           setTimeout(() => setStatus(""), 3000);
         });

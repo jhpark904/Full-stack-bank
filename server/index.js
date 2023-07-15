@@ -1,9 +1,10 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
-const dal = require("./dal");
 const admin = require("./auth/admin");
 const bodyParser = require("body-parser");
+const { User } = require("./models/user");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -42,42 +43,52 @@ app.use(bodyParser.json());
 // });
 
 // create account route
-app.post("/account/create", function (req, res) {
-  dal.create(req.body).then((user) => {
-    res.send(user);
-  });
+app.post("/account/create", async (req, res) => {
+  const newUser = new User({ ...req.body });
+  const savedUser = await newUser.save();
+  return res.status(201).json(savedUser);
 });
 
 // get user route
-app.get("/account/get/:uid", function (req, res) {
-  dal.getUser(req.params.uid).then((user) => {
-    res.send(user);
-  });
-});
-
-// login route
-app.get("/account/login/:email/:password", function (req, res) {
-  res.send({
-    email: req.params.email,
-    password: req.params.password,
-  });
+app.get("/account/get/:id", async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  return res.status(200).json(user);
 });
 
 // update balance route
-app.put("/balance/:uid", function (req, res) {
-  dal.updateBalance(req.params.uid, req.body.amount).then((user) => {
-    res.send(user);
-  });
+app.put("/balance/:id", async (req, res) => {
+  const { id } = req.params;
+  const numberAmount = Number(req.body.amount);
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: id },
+    {
+      $inc: {
+        balance: numberAmount,
+      },
+    },
+    { new: true }
+  );
+  res.status(200).json(updatedUser);
 });
 
 // all user route
-app.get("/account/all", function (req, res) {
-  dal.all().then((users) => {
-    res.send(users);
-  });
+app.get("/account/all", async (req, res) => {
+  const allUsers = await User.find();
+  return res.status(200).json(allUsers);
 });
 
-const port = 8080;
-const server = app.listen(port);
+const start = async () => {
+  const port = 8080;
+  const connectionString = "mongodb://localhost:27017";
 
-module.exports = { app, server };
+  try {
+    await mongoose.connect(connectionString);
+    app.listen(port, () => console.log(`Server started on port ${port}`));
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+};
+
+start();

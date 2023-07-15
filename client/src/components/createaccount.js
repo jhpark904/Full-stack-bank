@@ -66,14 +66,14 @@ function CreateAccount({ refreshCurrentUser }) {
             name: name,
             email: email,
             password: password,
-            uid: user.uid,
+            _id: user.uid,
           }),
         })
           .then((res) => {
             return res.json();
           })
           .then((user) => {
-            refreshCurrentUser(user);
+            refreshCurrentUser(user._id);
             setShow(false);
           });
       })
