@@ -17,18 +17,29 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
 
   const fetchCurrentUser = (id, callback) => {
-    fetch(`${apiUrl}/account/get/${id}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((user) => {
-        if (user) {
-          setCurrentUser(user);
-          if (callback) {
-            callback();
-          }
-        }
+    if (auth.currentUser) {
+      auth.currentUser.getIdToken().then((idToken) => {
+        fetch(`${apiUrl}/account/get/${id}`, {
+          method: "Get",
+          headers: {
+            Authorization: idToken,
+          },
+        })
+          .then((res) => {
+            return res.json();
+          })
+          .then((user) => {
+            if (user) {
+              setCurrentUser(user);
+              if (callback) {
+                callback();
+              }
+            }
+          });
       });
+    } else {
+      console.log("No signed in user");
+    }
   };
 
   useEffect(() => {

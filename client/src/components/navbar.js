@@ -43,7 +43,7 @@ const NavBar = ({ currentUser }) => {
           >
             <li className="nav-item">
               <a className="nav-link" href="#/login/">
-                Login
+                {currentUser ? "Log Out" : "Log In"}
               </a>
             </li>
           </OverlayTrigger>

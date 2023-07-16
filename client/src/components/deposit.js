@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { BankForm } from "./context";
 import { useNavigate } from "react-router-dom";
 import { apiUrl } from "./context";
+import { auth } from "../auth/firebase";
 
 const Deposit = ({ currentUser, refreshCurrentUser }) => {
   const [amount, setAmount] = React.useState(0);
@@ -37,22 +38,30 @@ const Deposit = ({ currentUser, refreshCurrentUser }) => {
       return;
     }
 
-    fetch(`${apiUrl}/balance/${currentUser._id}`, {
-      method: "Put",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ amount: amount }),
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((user) => {
-        refreshCurrentUser(user._id, () => {
-          setStatus("Deposit success!");
-          setTimeout(() => setStatus(""), 3000);
-        });
+    if (auth.currentUser) {
+      auth.currentUser.getIdToken().then((idToken) => {
+        fetch(`${apiUrl}/balance/${currentUser._id}`, {
+          method: "Put",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: idToken,
+          },
+          body: JSON.stringify({ amount: amount }),
+        })
+          .then((res) => {
+            return res.json();
+          })
+          .then((user) => {
+            refreshCurrentUser(user._id, () => {
+              setStatus("Deposit success!");
+              setTimeout(() => setStatus(""), 3000);
+            });
+          });
       });
+    } else {
+      setStatus("You are not signed in!");
+      setTimeout(() => setStatus(""), 3000);
+    }
   };
 
   return (

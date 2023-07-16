@@ -3,15 +3,12 @@ const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
 const admin = require("./auth/admin");
+const checkIfAuthenticated = require("./auth/authHandler");
 const bodyParser = require("body-parser");
 const { User } = require("./models/user");
 
 app.use(cors());
 app.use(bodyParser.json());
-
-// app.get("/", (req, res) => res.send("navigate to localhost:3000/login.html!"));
-
-// app.get("/open", (req, res) => res.send("Open Route!"));
 
 // // verify token at the root route
 // app.get("/auth", function (req, res) {
@@ -50,14 +47,14 @@ app.post("/account/create", async (req, res) => {
 });
 
 // get user route
-app.get("/account/get/:id", async (req, res) => {
+app.get("/account/get/:id", checkIfAuthenticated, async (req, res) => {
   const { id } = req.params;
   const user = await User.findById(id);
-  return res.status(200).json(user);
+  res.status(200).json(user);
 });
 
 // update balance route
-app.put("/balance/:id", async (req, res) => {
+app.put("/balance/:id", checkIfAuthenticated, async (req, res) => {
   const { id } = req.params;
   const numberAmount = Number(req.body.amount);
   const updatedUser = await User.findOneAndUpdate(
@@ -73,7 +70,7 @@ app.put("/balance/:id", async (req, res) => {
 });
 
 // all user route
-app.get("/account/all", async (req, res) => {
+app.get("/account/all", async (_, res) => {
   const allUsers = await User.find();
   return res.status(200).json(allUsers);
 });
