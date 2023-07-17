@@ -51,11 +51,16 @@ const Deposit = ({ currentUser, refreshCurrentUser }) => {
           .then((res) => {
             return res.json();
           })
-          .then((user) => {
-            refreshCurrentUser(user._id, () => {
-              setStatus("Deposit success!");
+          .then((data) => {
+            if (data.error) {
+              setStatus(data.error);
               setTimeout(() => setStatus(""), 3000);
-            });
+            } else {
+              refreshCurrentUser(data._id, () => {
+                setStatus("Deposit success!");
+                setTimeout(() => setStatus(""), 3000);
+              });
+            }
           });
       });
     } else {

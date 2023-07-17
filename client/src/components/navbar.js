@@ -6,7 +6,7 @@ const tooltip = (displayInfo) => {
   return <Tooltip>{displayInfo}</Tooltip>;
 };
 
-const NavBar = ({ currentUser }) => {
+const NavBar = ({ currentUser, isAdmin }) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <a className="navbar-brand" href="#/">
@@ -25,17 +25,19 @@ const NavBar = ({ currentUser }) => {
       </button>
       <div className="collapse navbar-collapse" id="navbarNav">
         <ul className="navbar-nav">
-          <OverlayTrigger
-            placement="bottom"
-            overlay={tooltip("Navigate to create a new account")}
-            triggers={["hover"]}
-          >
-            <li className="nav-item">
-              <a className="nav-link" href="#/CreateAccount/">
-                Create Account
-              </a>
-            </li>
-          </OverlayTrigger>
+          {!currentUser && (
+            <OverlayTrigger
+              placement="bottom"
+              overlay={tooltip("Navigate to create a new account")}
+              triggers={["hover"]}
+            >
+              <li className="nav-item">
+                <a className="nav-link" href="#/CreateAccount/">
+                  Create Account
+                </a>
+              </li>
+            </OverlayTrigger>
+          )}
           <OverlayTrigger
             placement="bottom"
             overlay={tooltip("Navigate to Log in with existing accout")}
@@ -71,17 +73,19 @@ const NavBar = ({ currentUser }) => {
                   </a>
                 </li>
               </OverlayTrigger>
-              <OverlayTrigger
-                placement="bottom"
-                overlay={tooltip("Navigate to view customer data")}
-                triggers={["hover"]}
-              >
-                <li className="nav-item">
-                  <a className="nav-link" href="#/alldata/">
-                    All Data
-                  </a>
-                </li>
-              </OverlayTrigger>
+              {isAdmin && (
+                <OverlayTrigger
+                  placement="bottom"
+                  overlay={tooltip("Navigate to view customer data")}
+                  triggers={["hover"]}
+                >
+                  <li className="nav-item">
+                    <a className="nav-link" href="#/alldata/">
+                      All Data
+                    </a>
+                  </li>
+                </OverlayTrigger>
+              )}
             </>
           )}
         </ul>

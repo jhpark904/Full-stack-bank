@@ -56,11 +56,16 @@ const Withdraw = ({ currentUser, refreshCurrentUser }) => {
           .then((res) => {
             return res.json();
           })
-          .then((user) => {
-            refreshCurrentUser(user._id, () => {
-              setStatus("Withdrawal success!");
+          .then((data) => {
+            if (data.error) {
+              setStatus(data.error);
               setTimeout(() => setStatus(""), 3000);
-            });
+            } else {
+              refreshCurrentUser(data._id, () => {
+                setStatus("Withdrawal success!");
+                setTimeout(() => setStatus(""), 3000);
+              });
+            }
           });
       });
     } else {

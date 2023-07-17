@@ -55,14 +55,10 @@ const Login = ({ currentUser }) => {
       return;
     }
 
-    signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        // Signed in
-      })
-      .catch((error) => {
-        setStatus(error.message);
-        setTimeout(() => setStatus(""), 3000);
-      });
+    signInWithEmailAndPassword(auth, email, password).catch((error) => {
+      setStatus(error.message);
+      setTimeout(() => setStatus(""), 3000);
+    });
   };
 
   return (

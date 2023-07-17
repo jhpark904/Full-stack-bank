@@ -50,7 +50,7 @@ function CreateAccount({ refreshCurrentUser }) {
     if (!validate(name, "name")) return;
     if (!validate(email, "email")) return;
     if (!validate(password, "password")) return;
-
+    
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in successfully
@@ -72,9 +72,14 @@ function CreateAccount({ refreshCurrentUser }) {
           .then((res) => {
             return res.json();
           })
-          .then((user) => {
-            refreshCurrentUser(user._id);
-            setShow(false);
+          .then((data) => {
+            if (data.error) {
+              setStatus(data.error);
+              setTimeout(() => setStatus(""), 3000);
+            } else {
+              refreshCurrentUser(data._id);
+              setShow(false);
+            }
           });
       })
       .catch((error) => {

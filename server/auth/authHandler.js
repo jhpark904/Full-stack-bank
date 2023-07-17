@@ -11,12 +11,31 @@ const checkIfAuthenticated = (req, res, next) => {
   admin
     .auth()
     .verifyIdToken(idToken)
-    .then(() => {
+    .then((userInfo) => {
+      if (userInfo.admin) {
+        req.isAdmin = true;
+      } else {
+        req.isAdmin = false;
+      }
       return next();
     })
-    .catch((e) => {
+    .catch(() => {
       return res.status(401).send({ error: "Invalid Token!" });
     });
 };
 
-module.exports = checkIfAuthenticated;
+const makeUserAdmin = async (req, res, next) => {
+  const { _id } = req.body; // userId is the firebase uid for the user
+
+  admin
+    .auth()
+    .setCustomUserClaims(_id, { admin: true })
+    .then(() => {
+      return next();
+    })
+    .catch(() => {
+      return res.status(401).send({ error: "Couldn't make user admin!" });
+    });
+};
+
+module.exports = { checkIfAuthenticated, makeUserAdmin };

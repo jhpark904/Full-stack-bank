@@ -2,62 +2,49 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
-const admin = require("./auth/admin");
-const checkIfAuthenticated = require("./auth/authHandler");
+const { checkIfAuthenticated, makeUserAdmin } = require("./auth/authHandler");
 const bodyParser = require("body-parser");
 const { User } = require("./models/user");
+const { errorHandler } = require("./errorHandler");
+const e = require("express");
 
 app.use(cors());
 app.use(bodyParser.json());
 
-// // verify token at the root route
-// app.get("/auth", function (req, res) {
-//   // read token from header
-//   const idToken = req.headers.authorization;
-//   console.log("header:", idToken);
-
-//   if (!idToken) {
-//     res.status(401).send();
-//     return;
-//   }
-//   //check, did they pass us the token?
-//   //if not, do a 401 error
-//   //check if verify id token was successful
-//   //if not, do 401
-
-//   //verify token, is this token valid?
-//   admin
-//     .auth()
-//     .verifyIdToken(idToken)
-//     .then(function (decodedToken) {
-//       console.log("decodedToken:", decodedToken);
-//       res.send("Authentication Success!");
-//     })
-//     .catch(function (error) {
-//       console.log("error:", error);
-//       res.status(401).send("Token invalid!");
-//     });
-// });
-
 // create account route
-app.post("/account/create", async (req, res) => {
+app.post("/account/create", (req, res, next) => {
   const newUser = new User({ ...req.body });
-  const savedUser = await newUser.save();
-  return res.status(201).json(savedUser);
+  newUser
+    .save()
+    .then((savedUser) => {
+      return res.status(201).json(savedUser);
+    })
+    .catch((e) => {
+      next(e);
+    });
 });
 
 // get user route
-app.get("/account/get/:id", checkIfAuthenticated, async (req, res) => {
+app.get("/account/get/:id", checkIfAuthenticated, (req, res, next) => {
   const { id } = req.params;
-  const user = await User.findById(id);
-  res.status(200).json(user);
+  User.findById(id)
+    .then((user) => {
+      return res.status(200).json({ user, isAdmin: req.isAdmin });
+    })
+    .catch((e) => {
+      next(e);
+    });
 });
 
 // update balance route
-app.put("/balance/:id", checkIfAuthenticated, async (req, res) => {
+app.put("/balance/:id", checkIfAuthenticated, (req, res, next) => {
   const { id } = req.params;
   const numberAmount = Number(req.body.amount);
-  const updatedUser = await User.findOneAndUpdate(
+  if (isNaN(numberAmount)) {
+    return res.status(500).send({ error: "amount entered is not a number..." });
+  }
+
+  User.findOneAndUpdate(
     { _id: id },
     {
       $inc: {
@@ -65,15 +52,31 @@ app.put("/balance/:id", checkIfAuthenticated, async (req, res) => {
       },
     },
     { new: true }
-  );
-  res.status(200).json(updatedUser);
+  )
+    .then((updatedUser) => {
+      return res.status(200).json(updatedUser);
+    })
+    .catch((e) => {
+      next(e);
+    });
 });
 
 // all user route
-app.get("/account/all", async (_, res) => {
-  const allUsers = await User.find();
-  return res.status(200).json(allUsers);
+app.get("/account/all", checkIfAuthenticated, (req, res, next) => {
+  if (req.isAdmin) {
+    User.find()
+      .then((users) => {
+        return res.status(200).json(users);
+      })
+      .catch((e) => {
+        next(e);
+      });
+  } else {
+    return res.status(401).json({ error: "Unathorized!" });
+  }
 });
+
+app.use(errorHandler);
 
 const start = async () => {
   const port = 8080;

@@ -1,4 +1,3 @@
-import "./App.css";
 import NavBar from "./components/navbar";
 import { UserContext, HashRouter } from "./components/context";
 import { Route, Routes } from "./components/context";
@@ -15,6 +14,7 @@ import { apiUrl } from "./components/context";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const fetchCurrentUser = (id, callback) => {
     if (auth.currentUser) {
@@ -28,9 +28,10 @@ function App() {
           .then((res) => {
             return res.json();
           })
-          .then((user) => {
-            if (user) {
-              setCurrentUser(user);
+          .then((data) => {
+            if (data) {
+              setCurrentUser(data.user);
+              setIsAdmin(data.isAdmin);
               if (callback) {
                 callback();
               }
@@ -48,13 +49,14 @@ function App() {
         fetchCurrentUser(user.uid);
       } else {
         setCurrentUser(null);
+        setIsAdmin(false);
       }
     });
   }, []);
 
   return (
     <HashRouter>
-      <NavBar currentUser={currentUser} />
+      <NavBar currentUser={currentUser} isAdmin={isAdmin} />
       <UserContext.Provider value={{ currentUser: null, users: {} }}>
         <div className="container" style={{ padding: "20px" }}>
           <Routes>
