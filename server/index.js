@@ -2,11 +2,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
-const { checkIfAuthenticated, makeUserAdmin } = require("./auth/authHandler");
+const { checkIfAuthenticated } = require("./auth/authHandler");
 const bodyParser = require("body-parser");
 const { User } = require("./models/user");
 const { errorHandler } = require("./errorHandler");
-const e = require("express");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -40,25 +39,26 @@ app.get("/account/get/:id", checkIfAuthenticated, (req, res, next) => {
 app.put("/balance/:id", checkIfAuthenticated, (req, res, next) => {
   const { id } = req.params;
   const numberAmount = Number(req.body.amount);
-  if (isNaN(numberAmount)) {
-    return res.status(500).send({ error: "amount entered is not a number..." });
-  }
 
-  User.findOneAndUpdate(
-    { _id: id },
-    {
-      $inc: {
-        balance: numberAmount,
+  if (isNaN(numberAmount)) {
+    return res.status(500).send({ error: "Amount entered is not a number..." });
+  } else {
+    User.findOneAndUpdate(
+      { _id: id },
+      {
+        $inc: {
+          balance: numberAmount,
+        },
       },
-    },
-    { new: true }
-  )
-    .then((updatedUser) => {
-      return res.status(200).json(updatedUser);
-    })
-    .catch((e) => {
-      next(e);
-    });
+      { new: true }
+    )
+      .then((updatedUser) => {
+        return res.status(200).json(updatedUser);
+      })
+      .catch((e) => {
+        next(e);
+      });
+  }
 });
 
 // all user route

@@ -105,14 +105,16 @@ const BankCard = ({
   const dataList = (data) => {
     return (
       <ul className="list-group">
-        {Object.entries(data).map(([key, value]) => {
+        {data.map((elem, idx) => {
           return (
-            <li key={key} className="list-group-item">
-              {Object.entries(value).map(([innerKey, innerValue]) => {
+            <li key={idx} className="list-group-item">
+              {Object.entries(elem).map(([key, value]) => {
                 return (
-                  <p>
-                    <b>{innerKey}</b>: {innerValue || "N/A"}
-                  </p>
+                  key != "__v" && (
+                    <p>
+                      <b>{key}</b>: {value || "N/A"}
+                    </p>
+                  )
                 );
               })}
             </li>
