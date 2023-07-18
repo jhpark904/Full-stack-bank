@@ -112,7 +112,8 @@ const BankCard = ({
                 return (
                   key != "__v" && (
                     <p>
-                      <b>{key}</b>: {value || "N/A"}
+                      <b>{key == "balance" ? `${key} (USD)` : key}</b>:{" "}
+                      {value || "N/A"}
                     </p>
                   )
                 );
