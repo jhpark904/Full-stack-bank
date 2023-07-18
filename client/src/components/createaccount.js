@@ -3,6 +3,7 @@ import { apiUrl } from "./context";
 import { BankForm } from "./context";
 import { auth } from "../auth/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 function CreateAccount({ refreshCurrentUser }) {
   const [show, setShow] = React.useState(true);
@@ -10,6 +11,8 @@ function CreateAccount({ refreshCurrentUser }) {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+
+  const navigate = useNavigate();
 
   const fields = [
     {
@@ -50,7 +53,7 @@ function CreateAccount({ refreshCurrentUser }) {
     if (!validate(name, "name")) return;
     if (!validate(email, "email")) return;
     if (!validate(password, "password")) return;
-    
+
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in successfully
@@ -77,7 +80,9 @@ function CreateAccount({ refreshCurrentUser }) {
               setStatus(data.error);
               setTimeout(() => setStatus(""), 3000);
             } else {
-              refreshCurrentUser(data._id);
+              refreshCurrentUser(data._id, () => {
+                navigate("/login/");
+              });
               setShow(false);
             }
           });

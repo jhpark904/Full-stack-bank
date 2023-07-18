@@ -1,6 +1,5 @@
 import NavBar from "./components/navbar";
-import { UserContext, HashRouter } from "./components/context";
-import { Route, Routes } from "./components/context";
+import { Route, Routes, HashRouter } from "./components/context";
 import Home from "./components/home";
 import CreateAccount from "./components/createaccount";
 import Login from "./components/login";
@@ -57,45 +56,43 @@ function App() {
   return (
     <HashRouter>
       <NavBar currentUser={currentUser} isAdmin={isAdmin} />
-      <UserContext.Provider value={{ currentUser: null, users: {} }}>
-        <div className="container" style={{ padding: "20px" }}>
-          <Routes>
-            <Route path="/" exact element={<Home />} />
+      <div
+        className="outer-container"
+        style={{ padding: "2rem", display: "flex", justifyContent: "left" }}
+      >
+        <Routes>
+          <Route path="/" exact element={<Home />} />
 
-            <Route
-              path="/CreateAccount/"
-              element={<CreateAccount refreshCurrentUser={fetchCurrentUser} />}
-            />
-            <Route
-              path="/login/"
-              element={<Login currentUser={currentUser} />}
-            />
+          <Route
+            path="/CreateAccount/"
+            element={<CreateAccount refreshCurrentUser={fetchCurrentUser} />}
+          />
+          <Route path="/login/" element={<Login currentUser={currentUser} />} />
 
+          <Route
+            path="/deposit/"
+            element={
+              <Deposit
+                currentUser={currentUser}
+                refreshCurrentUser={fetchCurrentUser}
+              />
+            }
+          />
+
+          {currentUser && (
             <Route
-              path="/deposit/"
+              path="/withdraw/"
               element={
-                <Deposit
+                <Withdraw
                   currentUser={currentUser}
                   refreshCurrentUser={fetchCurrentUser}
                 />
               }
             />
-
-            {currentUser && (
-              <Route
-                path="/withdraw/"
-                element={
-                  <Withdraw
-                    currentUser={currentUser}
-                    refreshCurrentUser={fetchCurrentUser}
-                  />
-                }
-              />
-            )}
-            {currentUser && <Route path="/alldata/" element={<AllData />} />}
-          </Routes>
-        </div>
-      </UserContext.Provider>
+          )}
+          {currentUser && <Route path="/alldata/" element={<AllData />} />}
+        </Routes>
+      </div>
     </HashRouter>
   );
 }

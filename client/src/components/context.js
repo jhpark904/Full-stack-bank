@@ -1,7 +1,6 @@
 import React from "react";
 import { Routes, Route, Link, HashRouter } from "react-router-dom";
 
-const UserContext = React.createContext(null);
 const apiUrl = `http://localhost:8080`;
 
 const classes = (bgcolor, txtcolor) => {
@@ -62,7 +61,7 @@ const BankForm = ({
   };
 
   return (
-    <div className={classes(bgcolor, txtcolor)} style={{ maxWidth: "18rem" }}>
+    <div className={classes(bgcolor, txtcolor)} style={{ minWidth: "18rem" }}>
       <div className="card-header">{header}</div>
       <div className="card-body">
         {title && <h5 className="card-title">{title}</h5>}
@@ -110,9 +109,9 @@ const BankCard = ({
             <li key={idx} className="list-group-item">
               {Object.entries(elem).map(([key, value]) => {
                 return (
-                  key != "__v" && (
+                  key !== "__v" && (
                     <p>
-                      <b>{key == "balance" ? `${key} (USD)` : key}</b>:{" "}
+                      <b>{key === "balance" ? `${key} (USD)` : key}</b>:{" "}
                       {value || "N/A"}
                     </p>
                   )
@@ -128,7 +127,7 @@ const BankCard = ({
   return (
     <div
       className={classes(bgcolor, txtcolor)}
-      style={{ maxWidth: `${width}rem` }}
+      style={{ width: `${width}rem` }}
     >
       <div className="card-header">{header}</div>
       <div className="card-body">
@@ -154,6 +153,5 @@ export {
   Route,
   Link,
   HashRouter,
-  UserContext,
   apiUrl,
 };
