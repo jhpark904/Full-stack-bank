@@ -46,6 +46,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: "Create env file"
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
       - name: Docker Compose Up
         run: docker-compose up
 
