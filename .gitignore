@@ -13,9 +13,6 @@
 # production
 /client/build
 
-# security
-/server/auth/auth-routes.json
-
 # misc
 .env
 .DS_Store
