@@ -47,7 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Docker Compose Up
-      - run: docker-compose up
+        run: docker-compose up
 
   # deploy:
   #   runs-on: ubuntu-latest
