@@ -1,5 +1,7 @@
 name: Build and Deploy
-on: push
+on:
+  push:
+    branches: main
 
 jobs:
   build-client:
@@ -48,7 +50,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: "Create env file"
+      - name: Create env file
         run: |
           echo "${{ secrets.ENV_FILE }}" > .env
         working-directory: ./server
@@ -64,3 +66,24 @@ jobs:
 
       - name: Push Image
         run: docker push jhpark904/best-bank
+
+  deploy-to-heroku:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Log in to heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:login
+
+      - name: Build and push
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:push -a best-bank web
+
+      - name: Release
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:release -a best-bank web
