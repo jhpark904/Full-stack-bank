@@ -11,7 +11,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // create account route
-app.post("/account/create", makeUserAdmin, (req, res, next) => {
+app.post("/account/create", (req, res, next) => {
   const newUser = new User({ ...req.body });
   newUser
     .save()
