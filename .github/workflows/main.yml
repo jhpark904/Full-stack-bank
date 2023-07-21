@@ -60,7 +60,7 @@ jobs:
         run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
       - name: Build Image
-        run: docker build -t jhpark904/best-bank .
+        run: docker build . --file Dockerfile --tag jhpark904/best-bank:$(date %s)
 
-      - name: Push Server Image
+      - name: Push Image
         run: docker push jhpark904/best-bank
