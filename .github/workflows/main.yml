@@ -60,7 +60,7 @@ jobs:
         run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
       - name: Build Image
-        run: docker build -t jhpark904/best-bank
+        run: docker build -t jhpark904/best-bank .
 
       - name: Push Server Image
         run: docker push jhpark904/best-bank
