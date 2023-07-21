@@ -43,24 +43,26 @@ jobs:
           CI: true
 
   docker:
+    needs: [build-client, build-server]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: "Create env file"
         run: |
           echo "${{ secrets.ENV_FILE }}" > .env
         working-directory: ./server
-      - name: Build Image
-        run: docker compose -f docker-compose.yml build
 
-  # deploy:
-  #   runs-on: ubuntu-latest
-  # steps:
-  #   - uses: actions/checkout@v3
-  #   - run: npm ci && npm run build --if-present
-  #   - uses: FirebaseExtended/action-hosting-deploy@v0
-  #     with:
-  #       repoToken: "${{ secrets.GITHUB_TOKEN }}"
-  #       firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_HOSTING_TEST_DBD63 }}"
-  #       channelId: live
-  #       projectId: hosting-test-dbd63
+      - name: Docker Log In
+        env:
+          DOCKER_USER: ${{secrets.DOCKER_USER}}
+          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+      - name: Build Images
+        run: docker build -t jhpark904/best-bank-client ./client
+        run: docker build -t jhpark904/best-bank-server ./server
+
+      - name: Push Images
+        run: docker push jhpark904/best-bank-client
+        run: docker push jhpark904/best-bank-server

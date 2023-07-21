@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
-const { checkIfAuthenticated } = require("./auth/authHandler");
+const { checkIfAuthenticated, makeUserAdmin } = require("./auth/authHandler");
 const bodyParser = require("body-parser");
 const { User } = require("./models/user");
 const { errorHandler } = require("./errorHandler");
@@ -11,7 +11,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // create account route
-app.post("/account/create", (req, res, next) => {
+app.post("/account/create", makeUserAdmin, (req, res, next) => {
   const newUser = new User({ ...req.body });
   newUser
     .save()
@@ -80,10 +80,9 @@ app.use(errorHandler);
 
 const start = async () => {
   const port = 8080;
-  const connectionString = "mongodb://localhost:27017";
 
   try {
-    await mongoose.connect(connectionString);
+    await mongoose.connect(process.env.CONNECTION_STRING);
     app.listen(port, () => console.log(`Server started on port ${port}`));
   } catch (error) {
     console.error(error);

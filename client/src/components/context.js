@@ -111,8 +111,7 @@ const BankCard = ({
                 return (
                   key !== "__v" && (
                     <p>
-                      <b>{key === "balance" ? `${key} (USD)` : key}</b>:{" "}
-                      {value || "N/A"}
+                      <b>{key === "balance" ? `${key} (USD)` : key}</b>: {value}
                     </p>
                   )
                 );
@@ -146,12 +145,4 @@ const BankCard = ({
   );
 };
 
-export {
-  Routes,
-  BankCard,
-  BankForm,
-  Route,
-  Link,
-  HashRouter,
-  apiUrl,
-};
+export { Routes, BankCard, BankForm, Route, Link, HashRouter, apiUrl };
