@@ -6,9 +6,17 @@ const { checkIfAuthenticated, makeUserAdmin } = require("./auth/authHandler");
 const bodyParser = require("body-parser");
 const { User } = require("./models/user");
 const { errorHandler } = require("./errorHandler");
+const path = require("path");
 
+const root = path.resolve(__dirname, "..");
+
+app.use(express.static(path.join(root, "client/build")));
 app.use(cors());
 app.use(bodyParser.json());
+
+app.get("/", function (_, res) {
+  res.sendFile(path.join(root, "client/build", "index.html"));
+});
 
 // create account route
 app.post("/account/create", (req, res, next) => {
