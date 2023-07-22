@@ -1,8 +1,10 @@
 import React from "react";
 import { Routes, Route, Link, HashRouter } from "react-router-dom";
+import "dotenv/config";
 
-// const apiUrl = "https://best-bank-c40ef5126795.herokuapp.com";
-const apiUrl = "http://localhost:8080";
+const apiUrl =
+  process.env.REACT_APP_DEV_URL ||
+  "https://best-bank-c40ef5126795.herokuapp.com";
 
 const classes = (bgcolor, txtcolor) => {
   const bg = bgcolor ? " bg-" + bgcolor : " ";

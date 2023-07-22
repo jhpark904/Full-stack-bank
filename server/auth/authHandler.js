@@ -11,12 +11,7 @@ const checkIfAuthenticated = (req, res, next) => {
   admin
     .auth()
     .verifyIdToken(idToken)
-    .then((userInfo) => {
-      if (userInfo.admin) {
-        req.isAdmin = true;
-      } else {
-        req.isAdmin = false;
-      }
+    .then(() => {
       return next();
     })
     .catch(() => {
@@ -24,18 +19,4 @@ const checkIfAuthenticated = (req, res, next) => {
     });
 };
 
-const makeUserAdmin = async (req, res, next) => {
-  const { _id } = req.body; // user id is the firebase uid for the user
-
-  admin
-    .auth()
-    .setCustomUserClaims(_id, { admin: true })
-    .then(() => {
-      return next();
-    })
-    .catch(() => {
-      return res.status(401).send({ error: "Couldn't make user admin!" });
-    });
-};
-
-module.exports = { checkIfAuthenticated, makeUserAdmin };
+module.exports = { checkIfAuthenticated };
