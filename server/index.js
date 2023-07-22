@@ -87,7 +87,7 @@ app.get("/account/all", checkIfAuthenticated, (req, res, next) => {
 app.use(errorHandler);
 
 const start = async () => {
-  const port = 8080;
+  const port = process.env.PORT || 80;
 
   try {
     await mongoose.connect(process.env.CONNECTION_STRING);
