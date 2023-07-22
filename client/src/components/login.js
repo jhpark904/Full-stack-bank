@@ -13,12 +13,16 @@ const Login = ({ currentUser }) => {
   const fields = [
     {
       id: "email-input",
+      divClass: "form-group",
+      inputClass: "form-control",
       type: "email",
       label: "Email address",
       handleOnChange: (e) => setEmail(e.currentTarget.value),
     },
     {
       id: "pw-input",
+      divClass: "form-group",
+      inputClass: "form-control",
       type: "password",
       label: "Password",
       handleOnChange: (e) => setPassword(e.currentTarget.value),

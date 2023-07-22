@@ -13,7 +13,6 @@ import { apiUrl } from "./components/context";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   const fetchCurrentUser = (id, callback) => {
     if (auth.currentUser) {
@@ -30,7 +29,6 @@ function App() {
           .then((data) => {
             if (data) {
               setCurrentUser(data.user);
-              setIsAdmin(data.isAdmin);
               if (callback) {
                 callback();
               }
@@ -48,14 +46,13 @@ function App() {
         fetchCurrentUser(user.uid);
       } else {
         setCurrentUser(null);
-        setIsAdmin(false);
       }
     });
   }, []);
 
   return (
     <HashRouter>
-      <NavBar currentUser={currentUser} isAdmin={isAdmin} />
+      <NavBar currentUser={currentUser} />
       <div
         className="outer-container"
         style={{ padding: "2rem", display: "flex", justifyContent: "left" }}
@@ -90,7 +87,12 @@ function App() {
               }
             />
           )}
-          {currentUser && <Route path="/alldata/" element={<AllData />} />}
+          {currentUser && (
+            <Route
+              path="/alldata/"
+              element={<AllData currentUser={currentUser} />}
+            />
+          )}
         </Routes>
       </div>
     </HashRouter>

@@ -18,6 +18,8 @@ const Deposit = ({ currentUser, refreshCurrentUser }) => {
   const fields = [
     {
       id: "deposit-input",
+      divClass: "form-group",
+      inputClass: "form-control",
       type: "number",
       label: "Amount (USD)",
       handleOnChange: (e) => setAmount(e.currentTarget.value),

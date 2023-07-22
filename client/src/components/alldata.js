@@ -3,12 +3,12 @@ import { BankCard } from "./context";
 import { apiUrl } from "./context";
 import { auth } from "../auth/firebase";
 
-function AllData() {
+function AllData({ currentUser }) {
   const [data, setData] = React.useState("");
   React.useEffect(() => {
     if (auth.currentUser) {
       auth.currentUser.getIdToken().then((idToken) => {
-        fetch(`${apiUrl}/account/all`, {
+        fetch(`${apiUrl}/account/all/${currentUser._id}`, {
           method: "Get",
           headers: {
             "Content-Type": "application/json",

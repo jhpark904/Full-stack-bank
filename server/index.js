@@ -31,12 +31,25 @@ app.post("/account/create", (req, res, next) => {
     });
 });
 
+// create admin route
+// app.post("/admin/create", makeUserAdmin, (req, res, next) => {
+//   const newUser = new User({ ...req.body });
+//   newUser
+//     .save()
+//     .then((savedUser) => {
+//       return res.status(201).json(savedUser);
+//     })
+//     .catch((e) => {
+//       next(e);
+//     });
+// });
+
 // get user route
 app.get("/account/get/:id", checkIfAuthenticated, (req, res, next) => {
   const { id } = req.params;
   User.findById(id)
     .then((user) => {
-      return res.status(200).json({ user, isAdmin: req.isAdmin });
+      return res.status(200).json({ user });
     })
     .catch((e) => {
       next(e);
@@ -70,8 +83,11 @@ app.put("/balance/:id", checkIfAuthenticated, (req, res, next) => {
 });
 
 // all user route
-app.get("/account/all", checkIfAuthenticated, (req, res, next) => {
-  if (req.isAdmin) {
+app.get("/account/all/:id", checkIfAuthenticated, async (req, res, next) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+
+  if (user && user.isAdmin) {
     User.find()
       .then((users) => {
         return res.status(200).json(users);

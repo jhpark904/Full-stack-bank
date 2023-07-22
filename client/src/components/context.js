@@ -1,7 +1,8 @@
 import React from "react";
 import { Routes, Route, Link, HashRouter } from "react-router-dom";
 
-const apiUrl = "https://best-bank-c40ef5126795.herokuapp.com";
+// const apiUrl = "https://best-bank-c40ef5126795.herokuapp.com";
+const apiUrl = "http://localhost:8080";
 
 const classes = (bgcolor, txtcolor) => {
   const bg = bgcolor ? " bg-" + bgcolor : " ";
@@ -26,13 +27,17 @@ const BankForm = ({
   const inputBody = (fields) => {
     const items = fields.map((item, index) => {
       return (
-        <div key={index}>
+        <div
+          key={index}
+          className={item.divClass}
+          style={{ marginBottom: "0.5rem" }}
+        >
           <label htmlFor={item.id} className="form-label">
             {item.label}
           </label>
           <input
             type={item.type}
-            className="form-control"
+            className={item.inputClass}
             id={item.id}
             onChange={(e) => item.handleOnChange(e)}
           />

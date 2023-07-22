@@ -11,27 +11,42 @@ function CreateAccount({ refreshCurrentUser }) {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [makeAdmin, setMakeAdmin] = React.useState(false);
 
   const navigate = useNavigate();
 
   const fields = [
     {
       id: "name-input",
+      divClass: "form-group",
+      inputClass: "form-control",
       type: "name",
       label: "Name",
       handleOnChange: (e) => setName(e.currentTarget.value),
     },
     {
       id: "email-input",
+      divClass: "form-group",
+      inputClass: "form-control",
       type: "email",
       label: "Email address",
       handleOnChange: (e) => setEmail(e.currentTarget.value),
     },
     {
       id: "pw-input",
+      divClass: "form-group",
+      inputClass: "form-control",
       type: "password",
       label: "Password",
       handleOnChange: (e) => setPassword(e.currentTarget.value),
+    },
+    {
+      id: "make-admin-checkbox",
+      divClass: "form-check",
+      inputClass: "form-check-input",
+      type: "checkbox",
+      label: "Create Admin Account",
+      handleOnChange: (e) => setMakeAdmin(e.currentTarget.checked),
     },
   ];
 
@@ -58,19 +73,22 @@ function CreateAccount({ refreshCurrentUser }) {
       .then((userCredential) => {
         // Signed in successfully
         const user = userCredential.user;
-
         const url = `${apiUrl}/account/create`;
+
+        const userBody = {
+          name: name,
+          email: email,
+          password: password,
+          _id: user.uid,
+          isAdmin: makeAdmin,
+        };
+
         fetch(url, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            name: name,
-            email: email,
-            password: password,
-            _id: user.uid,
-          }),
+          body: JSON.stringify(userBody),
         })
           .then((res) => {
             return res.json();
@@ -82,8 +100,8 @@ function CreateAccount({ refreshCurrentUser }) {
             } else {
               refreshCurrentUser(data._id, () => {
                 navigate("/login/");
+                setShow(false);
               });
-              setShow(false);
             }
           });
       })
