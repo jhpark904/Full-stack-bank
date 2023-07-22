@@ -84,7 +84,7 @@ const BankForm = ({
             <button
               type="submit"
               className="btn btn-light"
-              onClick={handleSubmit}
+              onClick={(e) => handleSubmit(e)}
             >
               {submitButtonText}
             </button>

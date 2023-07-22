@@ -50,7 +50,9 @@ const Login = ({ currentUser }) => {
       });
   };
 
-  const signIn = () => {
+  const signIn = (e) => {
+    e.preventDefault();
+
     if (!validate(email, "Email address")) {
       return;
     }

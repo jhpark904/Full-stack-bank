@@ -64,7 +64,9 @@ function CreateAccount({ refreshCurrentUser }) {
     return true;
   }
 
-  function handleCreate() {
+  function handleCreate(e) {
+    e.preventDefault();
+
     if (!validate(name, "name")) return;
     if (!validate(email, "email")) return;
     if (!validate(password, "password")) return;
