@@ -50,11 +50,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Create env file
-        run: |
-          echo "${{ secrets.ENV_FILE }}" > .env
-        working-directory: ./server
-
       - name: Docker Log In
         env:
           DOCKER_USER: ${{secrets.DOCKER_USER}}
