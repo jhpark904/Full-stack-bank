@@ -25,9 +25,9 @@ Full stack bank application created with MERN stack
 
 ### CI / CD
 
-- GitHub actions [workflow](.github/workflows/main.yml) is set up to
+- GitHub actions [workflow](.github/workflows/main.yml) is set up to:
   - build and test the client as well as the server
-  - Deployment to Docker Hub and Heroku
+  - deploy to Docker Hub and Heroku
   
 
 ## Technologies Used
