@@ -13,7 +13,7 @@ Full stack bank application created with MERN stack
 
 ## Scope of Funtionality
 
-The application supports:
+### The application supports:
 
 - Interactive navigation Bar
 - Creat Account fucntionality
@@ -22,6 +22,13 @@ The application supports:
 - Deposit functionality
 - Withdraw functionality
 - Admin can view customer information
+
+### CI / CD
+
+- GitHub actions [workflow](.github/workflows/main.yml) is set up to
+  - build and test the client as well as the server
+  - Deployment to Docker Hub and Heroku
+  
 
 ## Technologies Used
 
